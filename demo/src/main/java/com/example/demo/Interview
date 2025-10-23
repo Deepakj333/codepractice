@@ -1,0 +1,67 @@
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+
+class Employee {
+    private String name;
+    private String department;
+    private double salary;
+
+    public Employee(String name, String department, double salary) {
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    public String getDepartment() { return department; }
+    public double getSalary() { return salary; }
+    public String getName() { return name; }
+
+    @Override
+    public String toString() {
+        return name + " (" + salary + ")";
+    }
+}
+
+public class EmployeeStats {
+    public static void main(String[] args) {
+        List<Employee> employees = Arrays.asList(
+            new Employee("Alice", "HR", 50000),
+            new Employee("Bob", "IT", 70000),
+            new Employee("Charlie", "HR", 55000),
+            new Employee("David", "IT", 80000),
+            new Employee("Eve", "Finance", 60000)
+        );
+
+        // 1. Average salary per department
+        Map<String, Double> avgSalary = employees.stream()
+            .collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.averagingDouble(Employee::getSalary)
+            ));
+
+        // 2. Count of employees per department
+        Map<String, Long> empCount = employees.stream()
+            .collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.counting()
+            ));
+
+        // 3. Highest salary per department
+        Map<String, Optional<Employee>> highestSalary = employees.stream()
+            .collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary))
+            ));
+
+        System.out.println("Average Salary by Department:");
+        avgSalary.forEach((dept, avg) -> System.out.println(dept + ": " + avg));
+
+        System.out.println("\nEmployee Count by Department:");
+        empCount.forEach((dept, count) -> System.out.println(dept + ": " + count));
+
+        System.out.println("\nHighest Salary by Department:");
+        highestSalary.forEach((dept, emp) -> 
+            System.out.println(dept + ": " + emp.map(Employee::toString).orElse("No employee")));
+    }
+}
