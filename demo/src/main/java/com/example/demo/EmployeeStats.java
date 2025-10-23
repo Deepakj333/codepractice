@@ -1,27 +1,3 @@
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-
-class Employee {
-    private String name;
-    private String department;
-    private double salary;
-
-    public Employee(String name, String department, double salary) {
-        this.name = name;
-        this.department = department;
-        this.salary = salary;
-    }
-
-    public String getDepartment() { return department; }
-    public double getSalary() { return salary; }
-    public String getName() { return name; }
-
-    @Override
-    public String toString() {
-        return name + " (" + salary + ")";
-    }
-}
 
 public class EmployeeStats {
     public static void main(String[] args) {
@@ -53,6 +29,12 @@ public class EmployeeStats {
                 Employee::getDepartment,
                 Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary))
             ));
+
+                // Highest salary
+
+    Optional<Employee> highestPaid = employees.stream()
+    .collect(Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary)));
+
 
         System.out.println("Average Salary by Department:");
         avgSalary.forEach((dept, avg) -> System.out.println(dept + ": " + avg));
